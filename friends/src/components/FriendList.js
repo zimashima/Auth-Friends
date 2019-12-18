@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { axiosWithAuth } from './../utils/axiosWithAuth';
 
-import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Grid, Fab, Dialog, DialogTitle, DialogContent, TextField, Button} from '@material-ui/core';
 import {Add as AddIcon} from '@material-ui/icons'
-
+import { makeStyles } from '@material-ui/core/styles';
 import Friend from './Friend'
 
 
-
 const useStyles = makeStyles(theme => ({
-    absolute: {
-      position: 'absolute',
-      bottom: theme.spacing(2),
-      right: theme.spacing(3),
+    textField: {
+      width: 350,
+      margin: 20
     },
   }));
 
 export default function FriendList(props) {
 
-    const classes = useStyles();
+    const classes = useStyles()
 
     const [friends, setFriends] = useState([])
     const [value, setValue] = useState({
@@ -61,9 +58,9 @@ export default function FriendList(props) {
         .catch(err=> console.log(err))
     }
 
-    const handleEdit = editValue =>{
+    const handleEdit = (editValue,id) =>{
         axiosWithAuth()
-         .put(`/friends/${editValue.id}`, editValue)
+         .put(`/friends/${id}`, editValue)
          .then(axiosWithAuth().get('/friends')
             .then(res => setFriends(res.data))
             .catch(err => console.log(err)))
@@ -81,8 +78,15 @@ export default function FriendList(props) {
     
 
     return (
+        <>
         <div className="friendList">
-         <Typography variant="h3"> I probably have friends but I couldn't find them</Typography>
+            <div className="header">
+
+         <Typography variant="h3" color="textSecondary"> F R I E N D S !</Typography>
+         <Fab color="primary" onClick={toggleOpen}>
+            <AddIcon />
+        </Fab>
+         </div>
          <Grid container spacing="3">
          {
              friends.map(each => (
@@ -91,41 +95,48 @@ export default function FriendList(props) {
                 </Grid>
              ))
          }
-        <Fab color="primary" className={classes.absolute} onClick={toggleOpen}>
-            <AddIcon />
-        </Fab>
+
         <Dialog open={open} onClose={toggleClose}>
             <DialogTitle id="addFriend">Add a new Friend</DialogTitle>
                 <DialogContent>
                     <form onSubmit={handleAdd}>
+                        <div className="formandbutton">
                         <TextField
-                            required 
+                            required
+                            className={classes.textField}
                             id="name"
-                            lable="Friend's Name"
+                            label="Friend's Name"
                             name="name"
+                            variant="outlined"
                             onChange={e => addChange(e)}
                             autoFocus/>
                         <TextField
-                            required 
+                            required
+                            className={classes.textField}
                             id="age"
                             label="Friend's Age"
                             name="age"
+                            variant="outlined"
                             onChange={e => addChange(e)}
                             autoFocus/>
                         <TextField
-                            required 
+                            required
+                            className={classes.textField}
                             id="email"
                             label="Friend's Email"
                             name="email"
+                            variant="outlined"
                             onChange={e => addChange(e)}
                             autoFocus/>
-                        <Button type="submit" variant="contained">Add</Button>
+                        <Button type="submit" variant="contained" color="primary">Add</Button>
+                        </div>
                     </form>
                 </DialogContent>
             </Dialog>
         </Grid>
 
         </div>
+        </>
     )
 }
 
