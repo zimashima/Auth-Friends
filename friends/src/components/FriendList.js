@@ -61,6 +61,16 @@ export default function FriendList(props) {
         .catch(err=> console.log(err))
     }
 
+    const handleEdit = editValue =>{
+        axiosWithAuth()
+         .put(`/friends/${editValue.id}`, editValue)
+         .then(axiosWithAuth().get('/friends')
+            .then(res => setFriends(res.data))
+            .catch(err => console.log(err)))
+        .catch(err=> console.log(err))
+        toggleClose()
+    }
+
     useEffect(()=>{
         axiosWithAuth().get('/friends')
         .then(res => {
@@ -77,7 +87,7 @@ export default function FriendList(props) {
          {
              friends.map(each => (
                  <Grid item>
-                <Friend id={each.id} name={each.name} age={each.age} email={each.email} handleDelete={handleDelete} />
+                <Friend id={each.id} name={each.name} age={each.age} email={each.email} handleDelete={handleDelete} handleEdit={handleEdit}/>
                 </Grid>
              ))
          }
@@ -104,7 +114,7 @@ export default function FriendList(props) {
                             autoFocus/>
                         <TextField
                             required 
-                            id="name"
+                            id="email"
                             label="Friend's Email"
                             name="email"
                             onChange={e => addChange(e)}
